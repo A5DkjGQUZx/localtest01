@@ -1,0 +1,149 @@
+{
+  "log": {
+    "loglevel": "debug",
+	"access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log"
+  },
+  "inbounds": [
+    {
+      "tag": "socks-in",
+      "protocol": "socks",
+      "listen": "0.0.0.0",
+      "port": 1080,
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+//        "ip:": "192.168.0.8"
+      }
+    }
+  ],
+  "outbounds": [
+{
+      "mux": {
+        "concurrency": 8,
+        "enabled": false
+      },
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "vCuKWWJqbaUZNKxxZtaY.nebulasolutions.co",
+            "port": 443,
+            "users": [
+              {
+                "alterId": 0,
+                "encryption": "",
+                "flow": "",
+                "id": "3850d1b6-0be6-4161-a9cd-74c2d2d4c71a",
+                "level": 8,
+                "security": "auto"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "tls",
+        "tlsSettings": {
+          "allowInsecure": false,
+          "alpn": [
+            "http/1.1"
+          ],
+          "fingerprint": "chrome",
+          "serverName": "falling-tree-3b82.nebulasoltuons.workers.dev"
+        },
+        "wsSettings": {
+          "headers": {
+            "Host": "falling-tree-3b82.nebulasoltuons.workers.dev"
+          },
+          "path": "/correspondence.nebulasolutions.co/DingoBingo"
+        }
+      },
+      "tag": "proxy"
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIP"
+      },
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      }
+    },
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "streamSettings": {
+        "sockopt": {
+          "mark": 255
+        }
+      }
+    }
+  ],
+  "routing": {
+    "domainMatcher": "mph",
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+//      {
+//        "type": "field",
+//        "domain": ["geosite:category-ads-all"],
+//        "outboundTag": "block"
+//      },
+      {
+        "type": "field",
+        "inboundTag": ["all-in"],
+        "port": 123,
+        "network": "udp",
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "inboundTag": ["all-in"],
+        "port": 53,
+        "network": "udp",
+        "outboundTag": "dns-out"
+      },
+      {
+        "type": "field",
+        "protocol": ["bittorrent"],
+        "outboundTag": "direct"
+      },
+		{
+        "outboundTag": "direct",
+          "domain": [
+            "regexp:.*\\.ir$",
+            "ext:iran.dat:ir",
+            "ext:iran.dat:other",
+            "geosite:category-ir-gov",
+            "geosite:category-ir-news",
+            "geosite:category-ir-bank",
+            "geosite:category-ir-tech",
+            "geosite:category-ir-travel",
+            "geosite:category-ir-shopping",
+            "geosite:category-ir-insurance",
+            "geosite:category-ir-scholar",
+            "snapp", "digikala","tapsi", "blogfa", "bank", "sb24.com", "sheypoor.com", "tebyan.net", "beytoote.com", "telewebion.com", "Film2movie.ws", "Setare.com", "Filimo.com", "Torob.com", "Tgju.org", "Sarzamindownload.com", "downloadha.com", "P30download.com", "Sanjesh.org"
+          ],
+        "type": "field"
+      },
+      {
+        "type": "field",
+        "ip": ["1.1.1.1", "8.8.8.8", "4.2.2.4", "8.8.4.4", "9.9.9.9"],
+        "outboundTag": "proxy"
+      }
+    ]
+  }
+}
