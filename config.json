@@ -125,8 +125,6 @@
         "outboundTag": "direct",
           "domain": [
             "regexp:.*\\.ir$",
-            "ext:iran.dat:ir",
-            "ext:iran.dat:other",
             "geosite:category-ir-gov",
             "geosite:category-ir-news",
             "geosite:category-ir-bank",
